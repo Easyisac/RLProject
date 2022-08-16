@@ -5,66 +5,40 @@ import os
 import sys
 import optparse
 import random
+import agent
+import pandas as pd
 
-# we need to import python modules from the $SUMO_HOME/tools directory
+
 if 'SUMO_HOME' in os.environ:
     tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
     sys.path.append(tools)
 else:
     sys.exit("please declare environment variable 'SUMO_HOME'")
 
-from sumolib import checkBinary  # noqa
-import traci  # noqa
-
+from sumolib import checkBinary
+import traci
 
 def generate_routefile():
     random.seed(42)  # make tests reproducible
     N = 3600  # number of time steps
-    # demand per second from different directions
-    # pWE = 1. / 10
-    # pEW = 1. / 11
-    # pNS = 1. / 30
-    p = 1./10
+    p = 1./3
     with open("data/cross.rou.xml", "w") as routes:
-        #         print("""<routes>
-        #         <vType id="typeWE" accel="0.8" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="16.67" \
-        # guiShape="passenger"/>
-        #         <vType id="typeNS" accel="0.8" decel="4.5" sigma="0.5" length="7" minGap="3" maxSpeed="25" guiShape="bus"/>
-        #
-        #         <route id="right" edges="51o 1i 2o 52i" />
-        #         <route id="left" edges="52o 2i 1o 51i" />
-        #         <route id="down" edges="54o 4i 3o 53i" />""", file=routes)
-        #         vehNr = 0
-        #         for i in range(N):
-        #             if random.uniform(0, 1) < pWE:
-        #                 print('    <vehicle id="right_%i" type="typeWE" route="right" depart="%i" />' % (
-        #                     vehNr, i), file=routes)
-        #                 vehNr += 1
-        #             if random.uniform(0, 1) < pEW:
-        #                 print('    <vehicle id="left_%i" type="typeWE" route="left" depart="%i" />' % (
-        #                     vehNr, i), file=routes)
-        #                 vehNr += 1
-        #             if random.uniform(0, 1) < pNS:
-        #                 print('    <vehicle id="down_%i" type="typeNS" route="down" depart="%i" color="1,0,0"/>' % (
-        #                     vehNr, i), file=routes)
-        #                 vehNr += 1
-        #         print("</routes>", file=routes)
         print("""<routes>
                 <vType id="type" accel="0.8" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="16.67" \
         guiShape="passenger"/>
         
-                <route id="ul" edges="54o 4i 1o 51i" />
-                <route id="ud" edges="54o 4i 1o 51i" />
-                <route id="ur" edges="54o 4i 3o 53i" />
-                <route id="ru" edges="52o 2i 4o 54i" />
-                <route id="rl" edges="52o 2i 1o 51i" />
-                <route id="rd" edges="52o 2i 3o 53i" />
-                <route id="dr" edges="53o 3i 2o 52i" />
-                <route id="du" edges="53o 3i 4o 54i" />
-                <route id="dl" edges="53o 3i 1o 51i" />
-                <route id="ld" edges="51o 1i 3o 53i" />
-                <route id="lr" edges="51o 1i 2o 52i" />
-                <route id="lu" edges="51o 1i 4o 54i" />""", file=routes)
+                <route id="ul" edges="54i 4i 1o 51o" />
+                <route id="ud" edges="54i 4i 1o 51o" />
+                <route id="ur" edges="54i 4i 3o 53o" />
+                <route id="ru" edges="52i 2i 4o 54o" />
+                <route id="rl" edges="52i 2i 1o 51o" />
+                <route id="rd" edges="52i 2i 3o 53o" />
+                <route id="dr" edges="53i 3i 2o 52o" />
+                <route id="du" edges="53i 3i 4o 54o" />
+                <route id="dl" edges="53i 3i 1o 51o" />
+                <route id="ld" edges="51i 1i 3o 53o" />
+                <route id="lr" edges="51i 1i 2o 52o" />
+                <route id="lu" edges="51i 1i 4o 54o" />""", file=routes)
         vehicleNumber = 0
         route = ['ul', 'ud', 'ur', 'ru', 'rl', 'rd', 'dr', 'du', 'dl', 'ld', 'lr', 'lu']
         for i in range(N):
@@ -73,42 +47,33 @@ def generate_routefile():
                     vehicleNumber, route[random.randint(0,11)], i), file=routes)
                 vehicleNumber += 1
         print("</routes>", file=routes)
-
-# The program looks like this
-#    <tlLogic id="0" type="static" programID="0" offset="0">
-# the locations of the tls are      NESW
-#        <phase duration="31" state="GrGr"/>
-#        <phase duration="6"  state="yryr"/>
-#        <phase duration="31" state="rGrG"/>
-#        <phase duration="6"  state="ryry"/>
-#    </tlLogic>
+        global vehicles
+        vehicles = vehicleNumber
 
 
 def run():
     """execute the TraCI control loop"""
     step = 0
-    # we start with phase 2 where EW has green
-    # traci.trafficlight.setPhase("0", 2)
     while traci.simulation.getMinExpectedNumber() > 0:
         traci.simulationStep()
-        # Qui va l'agente di RL
-        # if traci.trafficlight.getPhase("0") == 2:
-        #     # we are not already switching
-        #     if traci.inductionloop.getLastStepVehicleNumber("0") > 0:
-        #         # there is a vehicle from the north, switch
-        #         traci.trafficlight.setPhase("0", 3)
-        #     else:
-        #         # otherwise try to keep green for EW
-        #         traci.trafficlight.setPhase("0", 2)
-        print('Number of cars:\nLeft: {}\nup: {}\nRight: {}\nDown: {}'.format(
+        state = [
             traci.lanearea.getLastStepVehicleNumber("1"),
-            traci.lanearea.getLastStepVehicleNumber("4"),
             traci.lanearea.getLastStepVehicleNumber("2"),
-            traci.lanearea.getLastStepVehicleNumber("3")
-        ))
+            traci.lanearea.getLastStepVehicleNumber("3"),
+            traci.lanearea.getLastStepVehicleNumber("4"),
+            traci.trafficlight.getPhase("0")
+        ]
+        action = agent.get_action(state, step)
+        if action:
+            traci.trafficlight.setPhase("0", action)
         step += 1
     traci.close()
     sys.stdout.flush()
+    get_total_waiting_time()
+
+def get_total_waiting_time():
+    info = pd.read_xml('tripinfo.xml')
+    print(sum(info['waitingTime'].values))
 
 
 def get_options():
