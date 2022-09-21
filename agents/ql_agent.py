@@ -1,6 +1,6 @@
 import numpy as np
 
-from sumo_rl.exploration.epsilon_greedy import EpsilonGreedy
+from exploration.epsilon_greedy import EpsilonGreedy
 
 
 class QLAgent:
@@ -17,7 +17,7 @@ class QLAgent:
         self.acc_reward = 0
 
     def act(self):
-        self.action = self.exploration.choose(self.q_table, self.state, self.action_space)
+        self.action = self.exploration.choose(self.q_table[self.state], self.action_space)
         return self.action
 
     def learn(self, next_state, reward, done=False):
@@ -30,4 +30,3 @@ class QLAgent:
         self.q_table[s][a] = self.q_table[s][a] + self.alpha*(reward + self.gamma*max(self.q_table[s1]) - self.q_table[s][a])
         self.state = s1
         self.acc_reward += reward
-
