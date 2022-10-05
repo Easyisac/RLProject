@@ -1,32 +1,84 @@
 import numpy as np
-
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers, Model
+from collections import deque
+import random
 from exploration.epsilon_greedy import EpsilonGreedy
 
 
 class DQNAgent:
 
-    def __init__(self, starting_state, state_space, action_space, alpha=0.5, gamma=0.95, exploration_strategy=EpsilonGreedy()):
+    def __init__(self, starting_state, state_space, action_space, learning_rate=0.01, gamma=0.95, exploration_strategy=EpsilonGreedy()):
         self.state = starting_state
         self.state_space = state_space
         self.action_space = action_space
         self.action = None
-        self.alpha = alpha
+        self.learning_rate = learning_rate
         self.gamma = gamma
-        self.q_table = {self.state: [0 for _ in range(action_space.n)]}
         self.exploration = exploration_strategy
+        self.MIN_REPLAY_SIZE = 10000
         self.acc_reward = 0
 
+        self.model = self.network()
+        self.target_model = self.network()
+        self.target_model.set_weights(self.model.get_weights())
+
+        self.replay_memory = deque(maxlen=1000)
+
+
+    def network(self):
+        learning_rate = 0.01
+        steps = 100000
+        rate = 0.96
+        staircase = False
+        schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+            learning_rate, steps, rate, staircase
+        )
+        initializer = tf.keras.initializers.HeUniform()
+        model = keras.Sequential()
+        model.add(keras.layers.Dense(64, input_shape=self.state_space.shape, activation='relu', kernel_initializer=initializer))
+        model.add(keras.layers.Dense(128, activation='relu', kernel_initializer=initializer))
+        model.add(keras.layers.Dense(64, activation='relu', kernel_initializer=initializer))
+        model.add(keras.layers.Dense(self.action_space.n, activation='linear', kernel_initializer=initializer))
+        model.compile(loss=tf.keras.losses.Huber(), optimizer=tf.keras.optimizers.Adam(learning_rate=schedule), metrics=['accuracy'])
+        return model
+
     def act(self):
-        self.action = self.exploration.choose(self.q_table[self.state], self.action_space)
+        s = np.asarray(self.state).reshape(1, len(self.state))
+        self.action = self.exploration.choose(self.model.predict(s), self.action_space)
         return self.action
 
-    def learn(self, next_state, reward, done=False):
-        if next_state not in self.q_table:
-            self.q_table[next_state] = [0 for _ in range(self.action_space.n)]
+    def learn(self):
 
-        s = self.state
-        s1 = next_state
-        a = self.action
-        self.q_table[s][a] = self.q_table[s][a] + self.alpha*(reward + self.gamma*max(self.q_table[s1]) - self.q_table[s][a])
-        self.state = s1
-        self.acc_reward += reward
+
+        if len(self.replay_memory) < self.MIN_REPLAY_SIZE:
+            return
+
+        batch_size = 64 * 2
+        mini_batch = random.sample(self.replay_memory, batch_size)
+        current_states = np.array([transition[0] for transition in mini_batch])
+        current_qs_list = self.model.predict(current_states)
+        new_current_states = np.array([transition[3] for transition in mini_batch])
+        future_qs_list = self.target_model.predict(new_current_states)
+
+        X = []
+        Y = []
+
+        for index, (observation, action, reward, new_observation, done) in enumerate(mini_batch):
+            if not done:
+                max_future_q = reward + self.gamma * np.max(future_qs_list[index])
+            else:
+                max_future_q = reward
+
+            current_qs = current_qs_list[index]
+            current_qs[action] = (1 - self.learning_rate) * current_qs[action] + self.learning_rate * max_future_q
+
+            X.append(observation)
+            Y.append(current_qs)
+        self.model.fit(np.array(X), np.array(Y), batch_size=batch_size, verbose=0, shuffle=True)
+
+
+    def memorize(self, time_step):
+        action, reward, new_state, done = time_step
+        self.replay_memory.append([self.state, action, reward, new_state, done])

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edges xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/edges_file.xsd">
+   <edge id="4t0" from="4" to="0" priority="78" numLanes="2" speed="19.444" />
+   <edge id="0t4" from="0" to="4" priority="46" numLanes="1" speed="11.111" width="7.0" />
+   <edge id="5t0" from="5" to="0" priority="78" numLanes="2" speed="19.444" />
+   <edge id="0t5" from="0" to="5" priority="46" numLanes="1" speed="11.111" width="7.0" />
+   <edge id="6t1" from="6" to="1" priority="78" numLanes="2" speed="19.444" />
+   <edge id="1t6" from="1" to="6" priority="46" numLanes="1" speed="11.111" width="7.0" />
+   <edge id="7t1" from="7" to="1" priority="78" numLanes="2" speed="19.444" />
+   <edge id="1t7" from="1" to="7" priority="46" numLanes="1" speed="11.111" width="7.0" />
+   <edge id="8t2" from="8" to="2" priority="78" numLanes="2" speed="19.444" />
+   <edge id="2t8" from="2" to="8" priority="46" numLanes="1" speed="11.111" width="7.0" />
+   <edge id="9t2" from="9" to="2" priority="78" numLanes="2" speed="19.444" />
+   <edge id="2t9" from="2" to="9" priority="46" numLanes="1" speed="11.111" width="7.0" />
+   <edge id="10t3" from="10" to="3" priority="78" numLanes="2" speed="19.444" />
+   <edge id="3t10" from="3" to="10" priority="46" numLanes="1" speed="11.111" width="7.0" />
+   <edge id="11t3" from="11" to="3" priority="78" numLanes="2" speed="19.444" />
+   <edge id="3t11" from="3" to="11" priority="46" numLanes="1" speed="11.111" width="7.0" />
+
+   <edge id="0t1" from="0" to="1" priority="78" numLanes="2" speed="19.444" />
+   <edge id="1t0" from="1" to="0" priority="78" numLanes="2" speed="19.444" />
+   <edge id="1t2" from="1" to="2" priority="78" numLanes="2" speed="19.444" />
+   <edge id="2t1" from="2" to="1" priority="78" numLanes="2" speed="19.444" />
+   <edge id="2t3" from="2" to="3" priority="78" numLanes="2" speed="19.444" />
+   <edge id="3t2" from="3" to="2" priority="78" numLanes="2" speed="19.444" />
+   <edge id="3t0" from="3" to="0" priority="78" numLanes="2" speed="19.444" />
+   <edge id="0t3" from="0" to="3" priority="78" numLanes="2" speed="19.444" />
+</edges>

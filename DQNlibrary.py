@@ -15,8 +15,8 @@ import traci
 if __name__ == '__main__':
     steps = 100000
     generate_routefile(steps)
-    env = SumoEnvironment(net_file='data/cross.net.xml',
-                          route_file='data/cross.rou.xml',
+    env = SumoEnvironment(net_file='data/cross/cross.net.xml',
+                          route_file='data/cross/cross.rou.xml',
                           out_csv_name='outputs/dqnlib/dqn',
                           single_agent=True,
                           use_gui=True,

@@ -4,22 +4,24 @@ import random
 
 
 
-def generate_routefile(N):
+def generate_routefile(N, name, dist, turndist):
     random.seed(42)  # make tests reproducible
-    pRight = 1./2
-    pUp = 1./12
-    pLeft = 1./2
-    pDown = 1./12
+    pRight, pUp, pLeft, pDown = dist
+    # pRight = 1./2
+    # pUp = 1./12
+    # pLeft = 1./2
+    # pDown = 1./12
+    prouteRight, prouteUp, prouteLeft, prouteDown = turndist
+    # prouteRight = [0., 1., 0.]
+    # prouteUp = [0., 0., 1.]
+    # prouteLeft = [1., 0., 0.]
+    # prouteDown = [0., 1., 0.]
     routeRight = ['rightUp', 'rightLeft', 'rightDown']
-    prouteRight = [0., 1., 0.]
     routeUp = ['upRight', 'upLeft', 'upDown']
-    prouteUp = [0., 0., 1.]
     routeLeft = ['leftRight', 'leftUp', 'leftDown']
-    prouteLeft = [1., 0., 0.]
     routeDown = ['downRight', 'downUp', 'downLeft']
-    prouteDown = [0., 1., 0.]
 
-    with open("data/cross.rou.xml", "w") as routes:
+    with open("data/{}/{}.rou.xml".format(name, name), "w") as routes:
         print("""<routes>
                 <vType id="type" accel="0.8" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="16.67" \
         guiShape="passenger"/>

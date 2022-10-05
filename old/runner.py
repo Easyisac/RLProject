@@ -33,7 +33,7 @@ def generate_routefile():
     routeDown = ['downRight', 'downUp', 'downLeft']
     prouteDown = [1./6, 2./3, 1./6]
 
-    with open("../data/cross.rou.xml", "w") as routes:
+    with open("../data/cross/cross.rou.xml", "w") as routes:
         print("""<routes>
                 <vType id="type" accel="0.8" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="16.67" \
         guiShape="passenger"/>

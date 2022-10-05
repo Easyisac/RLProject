@@ -14,13 +14,24 @@ from exploration.epsilon_greedy import EpsilonGreedy
 
 
 def run(use_gui=True, runs=1, steps=100000):
-    generate_routefile(steps)
-    bins = 10
-    out_csv = 'outputs/qlearn/ql'
+    # pRight = 1./2
+    # pUp = 1./12
+    # pLeft = 1./2
+    # pDown = 1./12
+    # prouteRight = [0., 1., 0.]
+    # prouteUp = [0., 0., 1.]
+    # prouteLeft = [1., 0., 0.]
+    # prouteDown = [0., 1., 0.]
+    dist = (1./2, 1./12, 1./2, 1./12)
+    turndist = ([1./3, 1./3, 1./3], [1./3, 1./3, 1./3], [1./3, 1./3, 1./3], [1./3, 1./3, 1./3])
+    name = 'cross2'
+    generate_routefile(steps, name, dist, turndist)
+    bins = 20
+    out_csv = 'outputs/qlearn/ql2'
     fixed_ts = False
-    env = SumoEnvironment(net_file='data/cross.net.xml',
+    env = SumoEnvironment(net_file='data/{}/{}.net.xml'.format(name, name),
                           single_agent=False,
-                          route_file='data/cross.rou.xml',
+                          route_file='data/{}/{}.rou.xml'.format(name, name),
                           out_csv_name=out_csv,
                           use_gui=use_gui,
                           num_seconds=steps,

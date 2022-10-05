@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<connections xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/connections_file.xsd">
+	<connection from="4t0" to="0t5"/>
+	<connection from="4t0" to="0t1"/>
+	<connection from="4t0" to="0t3"/>
+	<connection from="5t0" to="0t1"/>
+	<connection from="5t0" to="0t3"/>
+	<connection from="5t0" to="0t4"/>
+	<connection from="1t0" to="0t3"/>
+	<connection from="1t0" to="0t4"/>
+	<connection from="1t0" to="0t5"/>
+	<connection from="3t0" to="0t4"/>
+	<connection from="3t0" to="0t5"/>
+	<connection from="3t0" to="0t1"/>
+
+	<connection from="0t1" to="1t6"/>
+	<connection from="0t1" to="1t7"/>
+	<connection from="0t1" to="1t2"/>
+	<connection from="6t1" to="1t7"/>
+	<connection from="6t1" to="1t2"/>
+	<connection from="6t1" to="1t0"/>
+	<connection from="7t1" to="1t2"/>
+	<connection from="7t1" to="1t0"/>
+	<connection from="7t1" to="1t6"/>
+	<connection from="2t1" to="1t0"/>
+	<connection from="2t1" to="1t6"/>
+	<connection from="2t1" to="1t7"/>
+
+	<connection from="3t2" to="2t1"/>
+	<connection from="3t2" to="2t8"/>
+	<connection from="3t2" to="2t9"/>
+	<connection from="1t2" to="2t8"/>
+	<connection from="1t2" to="2t9"/>
+	<connection from="1t2" to="2t3"/>
+	<connection from="8t2" to="2t9"/>
+	<connection from="8t2" to="2t3"/>
+	<connection from="8t2" to="2t1"/>
+	<connection from="9t2" to="2t3"/>
+	<connection from="9t2" to="2t1"/>
+	<connection from="9t2" to="2t8"/>
+
+	<connection from="11t3" to="3t0"/>
+	<connection from="11t3" to="3t2"/>
+	<connection from="11t3" to="3t10"/>
+	<connection from="0t3" to="3t2"/>
+	<connection from="0t3" to="3t10"/>
+	<connection from="0t3" to="3t11"/>
+	<connection from="2t3" to="3t10"/>
+	<connection from="2t3" to="3t11"/>
+	<connection from="2t3" to="3t0"/>
+	<connection from="10t3" to="3t11"/>
+	<connection from="10t3" to="3t0"/>
+	<connection from="10t3" to="3t2"/>
+</connections>
