@@ -24,13 +24,16 @@ def run(use_gui=True, runs=1, steps=100000):
     # prouteDown = [0., 1., 0.]
     # dist = (1./2, 1./12, 1./2, 1./12)
     # turndist = ([0., 1., 0.], [0., 0., 1.], [1., 0., 0.], [0., 1., 0.])
-    # name = 'cross'
+
     dist = (1./2, 1./12, 1./2, 1./12)
-    turndist = ([1./3, 1./3, 1./3], [1./3, 1./3, 1./3], [1./3, 1./3, 1./3], [1./3, 1./3, 1./3])
-    name = 'cross2'
+    turndist = ([0., 1., 0.], [0., 0., 1.], [1., 0., 0.], [0., 1., 0.])
+    name = 'cross'
+    out_csv = 'outputs/dqnlearn/dqna2'
+    # dist = (1./2, 1./12, 1./2, 1./12)
+    # turndist = ([1./3, 1./3, 1./3], [1./3, 1./3, 1./3], [1./3, 1./3, 1./3], [1./3, 1./3, 1./3])
+    # name = 'cross2'
+    # out_csv = 'outputs/dqnlearn/dqn4'
     generate_routefile(steps, name, dist, turndist)
-    generate_routefile(steps, name, dist, turndist)
-    out_csv = 'outputs/dqnlearn/dqn2'
     fixed_ts = False
     env = SumoEnvironment(net_file='data/{}/{}.net.xml'.format(name, name),
                           single_agent=False,

@@ -17,31 +17,40 @@ class DQNAgent:
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.exploration = exploration_strategy
-        self.MIN_REPLAY_SIZE = 10000
+        self.MIN_REPLAY_SIZE = 128
         self.acc_reward = 0
 
         self.model = self.network()
         self.target_model = self.network()
         self.target_model.set_weights(self.model.get_weights())
 
-        self.replay_memory = deque(maxlen=1000)
+        self.replay_memory = deque(maxlen=10000)
+
+    def get_lr_metric(self, optimizer):
+        def lr(y_true, y_pred):
+            return optimizer._decayed_lr(tf.float32)
+        return lr
 
 
     def network(self):
-        learning_rate = 0.01
-        steps = 100000
-        rate = 0.96
-        staircase = False
-        schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-            learning_rate, steps, rate, staircase
-        )
+        learning_rate = 0.00005
+        # steps = 10000
+        # rate = 0.96
+        # staircase = True
+        # schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+        #     learning_rate, steps, rate, staircase
+        # )
+        optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+        # lr_metric = self.get_lr_metric(optimizer)
         initializer = tf.keras.initializers.HeUniform()
+
+
         model = keras.Sequential()
-        model.add(keras.layers.Dense(64, input_shape=self.state_space.shape, activation='relu', kernel_initializer=initializer))
-        model.add(keras.layers.Dense(128, activation='relu', kernel_initializer=initializer))
-        model.add(keras.layers.Dense(64, activation='relu', kernel_initializer=initializer))
+        model.add(keras.layers.Dense(36, input_shape=self.state_space.shape, activation='relu', kernel_initializer=initializer))
+        #model.add(keras.layers.Dense(24, activation='relu', kernel_initializer=initializer))
+        #model.add(keras.layers.Dense(20, activation='relu', kernel_initializer=initializer))
         model.add(keras.layers.Dense(self.action_space.n, activation='linear', kernel_initializer=initializer))
-        model.compile(loss=tf.keras.losses.Huber(), optimizer=tf.keras.optimizers.Adam(learning_rate=schedule), metrics=['accuracy'])
+        model.compile(loss=tf.keras.losses.Huber(), optimizer=optimizer, metrics=['accuracy'])
         return model
 
     def act(self):
@@ -50,7 +59,6 @@ class DQNAgent:
         return self.action
 
     def learn(self):
-
 
         if len(self.replay_memory) < self.MIN_REPLAY_SIZE:
             return
@@ -76,8 +84,8 @@ class DQNAgent:
 
             X.append(observation)
             Y.append(current_qs)
-        self.model.fit(np.array(X), np.array(Y), batch_size=batch_size, verbose=0, shuffle=True)
 
+        self.model.fit(np.array(X), np.array(Y), batch_size=batch_size, verbose=0, shuffle=True)
 
     def memorize(self, time_step):
         action, reward, new_state, done = time_step
