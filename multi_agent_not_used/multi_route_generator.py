@@ -104,7 +104,7 @@ def generate_routefile(N, name):
 
         vehicleNumber = 0
 
-        prob = 1./500
+        prob = 1./20
 
         for i in range(N):
             for j in range(8):

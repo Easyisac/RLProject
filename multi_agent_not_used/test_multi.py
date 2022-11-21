@@ -18,7 +18,7 @@ def run(use_gui=True, runs=1, steps=100000):
     generate_routefile(steps, name)
     bins = 10
     out_csv = 'outputs/qlearn/multi_ql'
-    fixed_ts = False
+    fixed_ts = True
     env = SumoEnvironment(net_file='data/{}/{}.net.xml'.format(name, name),
                           single_agent=False,
                           route_file='data/{}/{}.rou.xml'.format(name, name),
